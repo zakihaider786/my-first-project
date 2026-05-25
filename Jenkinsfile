@@ -3,6 +3,14 @@ pipeline {
 
     stages {
 
+        stage('Validate HTML') {
+            steps {
+                bat '''
+                findstr /C:"</body>" index.html
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Building website'
@@ -25,33 +33,16 @@ pipeline {
         success {
             mail(
                 to: 'zakihaide000@gmail.com',
-                subject: "✅ SUCCESS: Build #${env.BUILD_NUMBER}",
-                body: """
-Build completed successfully.
-
-Project: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-Status: SUCCESS
-
-GitHub push detected and deployment completed successfully.
-"""
+                subject: "✅ SUCCESS Build #${env.BUILD_NUMBER}",
+                body: "Build completed successfully."
             )
         }
 
         failure {
             mail(
                 to: 'zakihaide000@gmail.com',
-                subject: "❌ FAILED: Build #${env.BUILD_NUMBER}",
-                body: """
-Build failed.
-
-Project: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-Status: FAILED
-
-Please check Jenkins console output for error details:
-${env.BUILD_URL}console
-"""
+                subject: "❌ FAILED Build #${env.BUILD_NUMBER}",
+                body: "Code validation failed."
             )
         }
     }
