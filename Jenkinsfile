@@ -6,9 +6,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building website'
-
-                // Intentionally check for a file
-                bat 'type test.txt'
             }
         }
 
@@ -28,13 +25,15 @@ pipeline {
         success {
             mail(
                 to: 'zakihaide000@gmail.com',
-                subject: "SUCCESS: Build #${env.BUILD_NUMBER}",
+                subject: "✅ SUCCESS: Build #${env.BUILD_NUMBER}",
                 body: """
-Build succeeded.
+Build completed successfully.
 
 Project: ${env.JOB_NAME}
 Build Number: ${env.BUILD_NUMBER}
 Status: SUCCESS
+
+GitHub push detected and deployment completed successfully.
 """
             )
         }
@@ -42,7 +41,7 @@ Status: SUCCESS
         failure {
             mail(
                 to: 'zakihaide000@gmail.com',
-                subject: "FAILED: Build #${env.BUILD_NUMBER}",
+                subject: "❌ FAILED: Build #${env.BUILD_NUMBER}",
                 body: """
 Build failed.
 
@@ -50,7 +49,8 @@ Project: ${env.JOB_NAME}
 Build Number: ${env.BUILD_NUMBER}
 Status: FAILED
 
-Please check Jenkins console output.
+Please check Jenkins console output for error details:
+${env.BUILD_URL}console
 """
             )
         }
