@@ -6,7 +6,14 @@ pipeline {
         stage('Validate HTML') {
             steps {
                 bat '''
+                findstr /C:"<body>" index.html
+                if errorlevel 1 exit /b 1
+
                 findstr /C:"</body>" index.html
+                if errorlevel 1 exit /b 1
+
+                findstr /C:"</head>" index.html
+                if errorlevel 1 exit /b 1
                 '''
             }
         }
@@ -42,7 +49,7 @@ pipeline {
             mail(
                 to: 'zakihaide000@gmail.com',
                 subject: "❌ FAILED Build #${env.BUILD_NUMBER}",
-                body: "Code validation failed."
+                body: "Build failed because HTML validation failed."
             )
         }
     }
