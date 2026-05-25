@@ -18,6 +18,24 @@ pipeline {
                 '''
             }
         }
+    }
 
+    post {
+
+        success {
+            mail(
+                to: 'zakihaide000@gmail.com',
+                subject: "SUCCESS: Build #${env.BUILD_NUMBER}",
+                body: "Build completed successfully."
+            )
+        }
+
+        failure {
+            mail(
+                to: 'zakihaide000@gmail.com',
+                subject: "FAILED: Build #${env.BUILD_NUMBER}",
+                body: "Build failed. Check Jenkins."
+            )
+        }
     }
 }
