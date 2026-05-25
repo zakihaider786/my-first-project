@@ -11,8 +11,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat 'mkdir deploy'
-                bat 'copy index.html deploy'
+                bat '''
+                if exist deploy rmdir /s /q deploy
+                mkdir deploy
+                copy index.html deploy
+                '''
             }
         }
 
